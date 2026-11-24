@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Produk ERP - CV.Home Fashions Indonesia</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SheetJS (xlsx) for Importing & Exporting Excel Files -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf8f6',
+                            100: '#f2e8e5',
+                            500: '#8c6d58',
+                            600: '#735643',
+                            700: '#5c4333',
+                            800: '#473326',
+                            900: '#34241b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f3ece6 0%, #e7dfd8 45%, #ebe4dc 100%);
+            background-attachment: fixed;
+        }
+        
+        /* Glassmorphism Utility Classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.52);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            box-shadow: 0 8px 32px rgba(71, 51, 38, 0.06);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.58);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.78);
+            box-shadow: 0 6px 24px rgba(71, 51, 38, 0.05);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.75);
+            border-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 32px rgba(71, 51, 38, 0.1);
+        }
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 24px 60px rgba(45, 32, 24, 0.18);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #8c6d58;
+        }
+        .glass-sub {
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .table-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
+        .table-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.3); border-radius: 8px; }
+        .table-scroll::-webkit-scrollbar-thumb { background: rgba(140, 109, 88, 0.35); border-radius: 8px; }
+        .table-scroll::-webkit-scrollbar-thumb:hover { background: rgba(140, 109, 88, 0.6); }
+    </style>
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Ambient Decorative Background Orbs -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none select-none">
+        <div class="absolute -top-24 -left-24 w-[480px] h-[480px] rounded-full bg-amber-200/45 blur-[110px]"></div>
+        <div class="absolute top-1/3 -right-32 w-[520px] h-[520px] rounded-full bg-orange-200/40 blur-[120px]"></div>
+        <div class="absolute -bottom-32 left-1/4 w-[560px] h-[560px] rounded-full bg-stone-300/50 blur-[120px]"></div>
+        <div class="absolute top-2/3 left-10 w-[340px] h-[340px] rounded-full bg-emerald-200/30 blur-[100px]"></div>
+    </div>
+
+    <!-- Modal Login System -->
+    <div id="login-modal" class="fixed inset-0 z-[100] bg-stone-900/50 backdrop-blur-md flex items-center justify-center p-4 pointer-events-auto">
+        <div class="glass-modal rounded-3xl max-w-md w-full p-6 space-y-6 text-center relative z-[101]">
+            <div class="space-y-2">
+    <div class="flex justify-center w-full">
+        <img src="HFI logo.png" alt="HomeFashions Lifestyle Inspirations" class="h-11 sm:h-12 w-auto object-contain block">
+    </div>
+    <h2 class="text-xl font-bold text-stone-900">ERP Product Catalog</h2>
+    <p class="text-xs text-stone-600">CV. Home Fashions & SaeHome</p>
+</div>
+
+            <div class="glass-sub p-3 rounded-2xl text-xs text-stone-700">
+                Pilih peran Anda untuk masuk ke sistem katalog.
+            </div>
+
+            <!-- Tab Selection / Role Switcher -->
+            <div class="grid grid-cols-2 gap-2 bg-white/50 border border-white/75 p-1 rounded-2xl">
+                <button type="button" onclick="switchLoginTab('guest')" id="tab-guest-btn" class="py-2 text-xs font-semibold rounded-xl transition bg-white text-stone-800 shadow-sm cursor-pointer">
+                    Tamu (View Only)
+                </button>
+                <button type="button" onclick="switchLoginTab('admin')" id="tab-admin-btn" class="py-2 text-xs font-semibold rounded-xl transition text-stone-600 hover:text-stone-900 cursor-pointer">
+                    Administrator
+                </button>
+            </div>
+
+            <!-- Login Form Guest -->
+            <div id="guest-login-form" class="space-y-4">
+                <p class="text-xs text-stone-600 text-left">Akses Tamu memungkinkan Anda untuk mencari, menyaring, dan melihat detail seluruh katalog tanpa dapat merubah data.</p>
+                <button type="button" onclick="loginAsGuest()" class="w-full py-3 bg-stone-800 hover:bg-stone-900 text-white font-semibold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="eye" class="w-4 h-4"></i> Masuk Sebagai Tamu
+                </button>
+            </div>
+
+            <!-- Login Form Admin -->
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden text-left">
+                <div>
+                    <label for="admin-password" class="block text-xs font-semibold text-stone-700 mb-1">Password Administrator</label>
+                    <input type="password" id="admin-password" placeholder="Masukkan password" autocomplete="current-password" class="glass-input w-full px-3 py-2 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <span id="login-error-msg" class="text-[11px] text-red-600 font-medium hidden mt-1 block">Password salah! Silakan coba lagi.</span>
+                </div>
+                <label class="flex items-center gap-2 text-xs text-stone-700 cursor-pointer select-none">
+                    <input type="checkbox" id="remember-me-checkbox" checked class="w-4 h-4 rounded border-stone-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                    <span>Ingat saya di perangkat ini (login otomatis tanpa ketik ulang)</span>
+                </label>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-semibold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="lock" class="w-4 h-4"></i> Masuk Sebagai Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 z-[120] hidden max-w-sm bg-stone-900/90 backdrop-blur-xl text-white px-4 py-3 rounded-2xl shadow-xl border border-white/20 flex items-center gap-3 transition-all duration-300">
+        <i id="toast-icon" data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+        <p id="toast-message" class="text-xs font-medium leading-relaxed"></p>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-[110] bg-stone-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 space-y-4 text-center">
+            <div class="w-12 h-12 bg-red-500/15 border border-red-300/50 text-red-600 rounded-2xl flex items-center justify-center mx-auto">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 id="confirm-modal-title" class="font-bold text-stone-900 text-base">Konfirmasi Tindakan</h3>
+                <p id="confirm-modal-text" class="text-xs text-stone-600">Apakah Anda yakin ingin melanjutkan?</p>
+            </div>
+            <div class="flex justify-center gap-2 pt-2">
+                <button type="button" onclick="closeConfirmModal()" class="flex-1 py-2.5 text-xs font-semibold text-stone-700 bg-white/60 hover:bg-white/90 border border-white/80 rounded-xl transition cursor-pointer">Batal</button>
+                <button type="button" id="confirm-modal-yes-btn" class="flex-1 py-2.5 text-xs font-semibold text-white bg-red-600/90 hover:bg-red-700 rounded-xl transition shadow-sm cursor-pointer">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hasil Impor Harga Saja -->
+    <div id="price-import-result-modal" class="fixed inset-0 z-[110] bg-stone-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-modal rounded-3xl max-w-lg w-full p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/60 pb-3">
+                <h3 class="font-bold text-stone-900 text-base flex items-center gap-2">
+                    <i data-lucide="badge-dollar-sign" class="w-5 h-5 text-amber-600"></i> Laporan Impor Harga Saja
+                </h3>
+                <button type="button" onclick="closePriceImportResultModal()" class="p-1.5 text-stone-500 hover:text-stone-800 rounded-lg hover:bg-white/60 cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="price-import-result-body" class="space-y-3 text-xs text-stone-700"></div>
+            <div class="flex justify-end pt-2 border-t border-white/60">
+                <button type="button" onclick="closePriceImportResultModal()" class="px-5 py-2 text-xs font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700 shadow-sm cursor-pointer">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Element Pop-up Gambar Saat Hover -->
+    <div id="hover-image-popup" class="fixed pointer-events-none z-[90] hidden transition-opacity duration-150 ease-out">
+        <div class="glass-modal p-2.5 rounded-2xl max-w-sm sm:max-w-md w-auto">
+            <img id="hover-popup-img" src="" alt="Preview" class="max-h-80 w-auto object-contain rounded-xl mx-auto block bg-white/70 p-1" />
+            <p id="hover-popup-title" class="text-xs font-semibold text-stone-800 text-center mt-2 px-2 truncate"></p>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-30 bg-white/55 backdrop-blur-xl border-b border-white/75 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand, Page Switcher & Primary Admin Actions -->
+            <div class="flex items-center gap-2.5 sm:gap-3.5 flex-wrap">
+                <div class="flex items-center space-x-2.5 mr-1">
+                    <img src="HFI logo.png" alt="HomeFashions Lifestyle Inspirations" class="h-8 sm:h-9 w-auto object-contain">
+                    <div class="border-l border-stone-300/80 pl-2.5 hidden md:block">
+                        <h1 class="font-bold text-xs sm:text-sm leading-tight text-stone-900">ERP Product Catalog</h1>
+                        <p class="text-[10px] text-stone-600">CV. Home Fashions & Sae Home</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Page Switcher Tabs -->
+                <nav class="flex items-center bg-white/45 backdrop-blur-md p-1 rounded-xl border border-white/75">
+                    <button type="button" onclick="switchMainPage('catalog')" id="nav-page-catalog" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-white/90 text-brand-700 shadow-sm cursor-pointer">
+                        <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                        <span>Katalog Produk</span>
+                    </button>
+                    <button type="button" onclick="switchMainPage('table')" id="nav-page-table" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-stone-600 hover:text-stone-900 cursor-pointer">
+                        <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
+                        <span>Tabel Data Tersimpan</span>
+                        <span id="nav-table-count-badge" class="ml-0.5 px-1.5 py-0.2 text-[10px] rounded-full bg-white/70 text-stone-700 font-mono border border-white/80">0</span>
+                    </button>
+                </nav>
+
+                <!-- Admin Primary Action Buttons -->
+                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                    <label id="btn-import-excel" class="admin-only hidden bg-emerald-600/90 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm cursor-pointer backdrop-blur-sm" title="Impor data produk baru dari file Excel (.xlsx)">
+                        <i data-lucide="file-up" class="w-3.5 h-3.5"></i>
+                        <span>Impor Excel</span>
+                        <input type="file" id="excel-import-input" accept=".xlsx, .xls, .csv" onchange="importExcelFile(event)" class="hidden">
+                    </label>
+                    <label id="btn-import-price-only" class="admin-only hidden bg-amber-600/90 hover:bg-amber-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm cursor-pointer backdrop-blur-sm" title="Update khusus komponen harga saja berdasarkan Kode Barang (foto & data lain tetap aman)">
+                        <i data-lucide="badge-dollar-sign" class="w-3.5 h-3.5"></i>
+                        <span>Impor Harga</span>
+                        <input type="file" id="price-import-input" accept=".xlsx, .xls, .csv" onchange="importPriceOnlyExcel(event)" class="hidden">
+                    </label>
+                    <button type="button" id="btn-add-product" onclick="openFormModal()" class="admin-only hidden bg-brand-600/95 text-white hover:bg-brand-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm backdrop-blur-sm cursor-pointer">
+                        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                        <span>Tambah</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Role Badge, Backup & Utility Actions -->
+            <div class="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
+                <div class="flex items-center bg-white/55 backdrop-blur-md rounded-xl px-2.5 py-1.5 text-xs border border-white/80">
+                    <span id="user-role-badge" class="font-semibold text-stone-700 mr-2 flex items-center gap-1">
+                        <i data-lucide="user" class="w-3.5 h-3.5"></i> Tamu
+                    </span>
+                    <button type="button" onclick="logout()" class="text-stone-500 hover:text-stone-900 transition pl-1.5 border-l border-stone-300/70 cursor-pointer" title="Keluar / Ganti Peran">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <button type="button" id="btn-export-json" onclick="exportToJson()" class="admin-only hidden bg-white/55 text-stone-700 hover:bg-white/85 border border-white/75 px-2.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1 cursor-pointer" title="Export Backup JSON">
+                    <i data-lucide="file-json" class="w-4 h-4"></i>
+                    <span class="hidden xl:inline">Exp JSON</span>
+                </button>
+                <label id="btn-import-json" class="admin-only hidden bg-white/55 text-stone-700 hover:bg-white/85 border border-white/75 px-2.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1 cursor-pointer" title="Import Backup JSON">
+                    <i data-lucide="file-code" class="w-4 h-4"></i>
+                    <span class="hidden xl:inline">Imp JSON</span>
+                    <input type="file" accept=".json" onchange="importFromJson(event)" class="hidden">
+                </label>
+                <button type="button" id="btn-clear-all" onclick="clearAllData()" class="admin-only hidden bg-red-500/15 text-red-600 hover:bg-red-500/25 border border-red-200/70 px-2.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1 cursor-pointer" title="Hapus Semua Data">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                <button type="button" id="wishlist-toggle-btn" onclick="toggleWishlistModal()" class="relative p-2 text-stone-700 hover:text-brand-700 bg-white/55 hover:bg-white/85 border border-white/75 rounded-xl transition cursor-pointer" title="Produk Favorit">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                    <span id="wishlist-badge" class="absolute -top-1 -right-1 bg-amber-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+                <button type="button" id="btn-export-excel" onclick="exportToExcel()" class="admin-only hidden items-center space-x-1.5 bg-white/55 text-stone-700 hover:bg-white/85 border border-white/75 px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer" title="Ekspor katalog ke Excel">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span class="hidden lg:inline">Ekspor Excel</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- PAGE 1: KATALOG PRODUK (GRID / LIST VIEW)                             -->
+    <!-- ===================================================================== -->
+    <main id="page-catalog-view" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+
+        <!-- Sidebar Filter Panel -->
+        <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
+            <div class="glass-panel p-5 rounded-2xl space-y-5 sticky top-20">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-semibold text-stone-900 flex items-center gap-2 text-sm">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-brand-600"></i> Filter Katalog
+                    </h2>
+                    <button type="button" onclick="resetFilters()" class="text-xs font-medium text-brand-700 hover:text-brand-900 cursor-pointer">Reset</button>
+                </div>
+
+                <!-- Search Input -->
+                <div>
+                    <label class="text-xs font-medium text-stone-600 uppercase tracking-wider mb-2 block">Pencarian Data</label>
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-stone-500"></i>
+                        <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Kode, Nama, Ukuran..." class="glass-input w-full pl-9 pr-3 py-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                    </div>
+                </div>
+
+                <!-- Kategori Filter -->
+                <div>
+                    <label class="text-xs font-medium text-stone-600 uppercase tracking-wider mb-2 block">Kategori Produk</label>
+                    <div class="space-y-1.5" id="category-filters"></div>
+                </div>
+
+                <!-- Material Filter -->
+                <div>
+                    <label class="text-xs font-medium text-stone-600 uppercase tracking-wider mb-2 block">Bahan Baku Utama</label>
+                    <select id="material-filter" onchange="applyFilters()" class="glass-input w-full p-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                        <option value="">Semua Bahan</option>
+                    </select>
+                </div>
+
+                <!-- Counter Info -->
+                <div class="pt-4 border-t border-white/60 text-xs text-stone-600 space-y-2">
+                    <div class="flex justify-between">
+                        <span>Menampilkan:</span>
+                        <span id="filtered-count" class="font-semibold text-stone-900">0 Produk</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Product Grid Area -->
+        <section class="flex-grow space-y-4">
+            <div class="glass-panel flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-stone-600 font-medium">Kelola & Tampilkan Produk</span>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-stone-600 mr-1">Urutkan:</span>
+                    <select id="sort-select" onchange="applyFilters()" class="glass-input p-1.5 text-xs rounded-lg focus:outline-none">
+                        <option value="latest">Paling Terakhir Diinput (Terbaru)</option>
+                        <option value="code-asc">Kode ERP (A-Z)</option>
+                        <option value="name-asc">Nama Produk (A-Z)</option>
+                        <option value="price-desc">Harga Tertinggi</option>
+                        <option value="price-asc">Harga Terendah</option>
+                        <option value="category">Kategori</option>
+                    </select>
+
+                    <div class="h-4 w-px bg-stone-300/70 mx-1"></div>
+
+                    <button type="button" onclick="setViewMode('grid')" id="btn-view-grid" class="p-1.5 rounded-lg bg-white/85 text-stone-800 shadow-sm cursor-pointer" title="Tampilan Grid">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                    </button>
+                    <button type="button" onclick="setViewMode('list')" id="btn-view-list" class="p-1.5 rounded-lg text-stone-500 hover:bg-white/60 cursor-pointer" title="Tampilan List">
+                        <i data-lucide="list" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products Container -->
+            <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+
+            <!-- Pagination Bar -->
+            <div id="pagination-container" class="glass-panel flex items-center justify-between p-4 rounded-2xl mt-4 text-xs">
+                <span id="page-info" class="text-stone-600 font-medium">Halaman 1 dari 1</span>
+                <div class="flex space-x-2">
+                    <button type="button" id="btn-prev-page" onclick="changePage(-1)" class="px-3 py-1.5 bg-white/60 border border-white/80 rounded-xl hover:bg-white/90 disabled:opacity-50 transition cursor-pointer">Sebelumnya</button>
+                    <button type="button" id="btn-next-page" onclick="changePage(1)" class="px-3 py-1.5 bg-white/60 border border-white/80 rounded-xl hover:bg-white/90 disabled:opacity-50 transition cursor-pointer">Selanjutnya</button>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden glass-panel p-12 text-center rounded-2xl space-y-3">
+                <div class="w-12 h-12 bg-white/70 text-stone-500 rounded-full flex items-center justify-center mx-auto border border-white">
+                    <i data-lucide="package-x" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-semibold text-stone-800">Tidak ada produk ditemukan</h3>
+                <p class="text-xs text-stone-600 max-w-sm mx-auto">Coba ubah kata kunci pencarian atau sesuaikan filter kategori produk Anda.</p>
+                <button type="button" onclick="resetFilters()" class="text-xs bg-brand-600 text-white px-4 py-2 rounded-xl hover:bg-brand-700 transition shadow-sm cursor-pointer">Reset Filter</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- PAGE 2: TABEL DATA TERSIMPAN (FULL-WIDTH DATABASE TABLE VIEW)         -->
+    <!-- ===================================================================== -->
+    <main id="page-table-view" class="hidden flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-bold text-stone-900 flex items-center gap-2">
+                    <i data-lucide="database" class="w-5 h-5 text-brand-600"></i> Tabel Data Tersimpan
+                </h2>
+                <p class="text-xs text-stone-600 mt-0.5">Rekapitulasi lengkap seluruh item produk, komponen HPP, dan harga jual di penyimpanan lokal.</p>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <label class="admin-only hidden bg-amber-600/90 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm cursor-pointer backdrop-blur-sm" title="Update khusus komponen harga berdasarkan Kode Barang tanpa mengubah foto & spesifikasi">
+                    <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i> Impor Harga Saja
+                    <input type="file" accept=".xlsx, .xls, .csv" onchange="importPriceOnlyExcel(event)" class="hidden">
+                </label>
+                <button type="button" onclick="openFormModal()" class="admin-only hidden bg-brand-600/95 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm backdrop-blur-sm cursor-pointer">
+                    <i data-lucide="plus" class="w-4 h-4"></i> + Tambah Data Baru
+                </button>
+                <button type="button" onclick="exportToExcel()" class="admin-only hidden bg-emerald-600/90 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm backdrop-blur-sm cursor-pointer">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Ekspor Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-brand-500/15 text-brand-800 flex items-center justify-center flex-shrink-0 border border-brand-300/50">
+                    <i data-lucide="boxes" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] font-medium text-stone-600 uppercase tracking-wider block">Total Produk Tersimpan</span>
+                    <span id="kpi-total-products" class="text-lg font-bold text-stone-900 font-mono">0 Item</span>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center flex-shrink-0 border border-amber-300/50">
+                    <i data-lucide="tags" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] font-medium text-stone-600 uppercase tracking-wider block">Total Kategori</span>
+                    <span id="kpi-total-categories" class="text-lg font-bold text-stone-900 font-mono">0 Kategori</span>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-800 flex items-center justify-center flex-shrink-0 border border-emerald-300/50">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] font-medium text-stone-600 uppercase tracking-wider block">Rata-rata Harga Jual</span>
+                    <span id="kpi-avg-price" class="text-lg font-bold text-emerald-800 font-mono">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-sky-500/15 text-sky-800 flex items-center justify-center flex-shrink-0 border border-sky-300/50">
+                    <i data-lucide="wallet" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span id="kpi-total-value-label" class="text-[11px] font-medium text-stone-600 uppercase tracking-wider block">Akumulasi Harga Jual</span>
+                    <span id="kpi-total-value" class="text-lg font-bold text-stone-900 font-mono">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Overhead & Profit Margin Settings -->
+        <div class="admin-only hidden glass-panel p-4 rounded-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2 text-xs font-bold text-stone-800">
+                    <div class="p-1.5 bg-amber-500/15 text-amber-800 rounded-lg border border-amber-300/50">
+                        <i data-lucide="percent" class="w-4 h-4"></i>
+                    </div>
+                    <span>Pengaturan Margin Global:</span>
+                </div>
+
+                <div class="flex items-center gap-2 bg-amber-500/10 border border-amber-300/50 px-3 py-1.5 rounded-xl">
+                    <label for="global-overhead-input" class="text-xs font-semibold text-amber-900">Overhead (%):</label>
+                    <input type="number" id="global-overhead-input" min="0" max="1000" step="0.1" value="10" onchange="updateGlobalMarginDefaults()" class="w-16 px-2 py-1 text-xs font-mono font-bold text-amber-950 bg-white/80 border border-amber-300/70 rounded-lg text-right focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+
+                <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-300/50 px-3 py-1.5 rounded-xl">
+                    <label for="global-profit-input" class="text-xs font-semibold text-emerald-900">Profit (%):</label>
+                    <input type="number" id="global-profit-input" min="0" max="1000" step="0.1" value="30" onchange="updateGlobalMarginDefaults()" class="w-16 px-2 py-1 text-xs font-mono font-bold text-emerald-950 bg-white/80 border border-emerald-300/70 rounded-lg text-right focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <button type="button" onclick="applyGlobalMarginsToAll()" class="px-3.5 py-2 bg-stone-800/90 hover:bg-stone-900 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm cursor-pointer">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span>Terapkan ke Semua Produk</span>
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between lg:justify-end gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-white/60">
+                <span id="table-autosave-status" class="text-[11px] font-medium text-emerald-800 bg-emerald-500/15 border border-emerald-300/60 px-2.5 py-1 rounded-lg hidden items-center gap-1">
+                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Tersimpan otomatis
+                </span>
+
+                <button type="button" id="btn-toggle-inline-edit" onclick="toggleInlineEditMode()" class="px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-brand-600 text-white shadow-sm hover:bg-brand-700 cursor-pointer">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                    <span id="inline-edit-btn-label">Mode Edit Langsung: ON</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Table Filter & Search Toolbar -->
+        <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-grow">
+                <div class="relative flex-grow max-w-md">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-stone-500"></i>
+                    <input type="text" id="table-search-input" onkeyup="resetTablePageAndRender()" placeholder="Cari kode ERP, nama produk, ukuran, bahan..." class="glass-input w-full pl-9 pr-3 py-2 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                </div>
+
+                <select id="table-category-filter" onchange="resetTablePageAndRender()" class="glass-input px-3 py-2 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="Semua">Semua Kategori</option>
+                </select>
+
+                <select id="table-sort-select" onchange="renderDataTable()" class="glass-input px-3 py-2 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="latest">Urut: Terbaru Diinput</option>
+                    <option value="oldest">Urut: Terlama (ID Asc)</option>
+                    <option value="code-asc">Kode ERP (A-Z)</option>
+                    <option value="name-asc">Nama Produk (A-Z)</option>
+                    <option value="price-desc">Harga Jual Tertinggi</option>
+                    <option value="price-asc">Harga Jual Terendah</option>
+                </select>
+
+                <button type="button" onclick="resetTableFilters()" class="px-3 py-2 text-xs font-medium text-stone-700 hover:text-brand-800 bg-white/60 hover:bg-white/90 border border-white/80 rounded-xl transition cursor-pointer">
+                    Reset
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-2 text-xs text-stone-600">
+                <span>Tampilkan:</span>
+                <select id="table-per-page" onchange="resetTablePageAndRender()" class="glass-input px-2.5 py-1.5 text-xs rounded-xl font-medium text-stone-800 focus:outline-none">
+                    <option value="10">10 baris</option>
+                    <option value="25" selected>25 baris</option>
+                    <option value="50">50 baris</option>
+                    <option value="all">Semua</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Data Table Card -->
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto table-scroll max-h-[68vh]">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead class="bg-white/75 backdrop-blur-xl sticky top-0 z-10 border-b border-white/80 text-[11px] font-bold uppercase tracking-wider text-stone-700">
+                        <tr>
+                            <th class="py-3.5 px-3 text-center w-12">No</th>
+                            <th class="py-3.5 px-3 text-center w-16">Foto</th>
+                            <th class="py-3.5 px-3 min-w-[115px]">Kode ERP</th>
+                            <th class="py-3.5 px-3 min-w-[125px]">Kategori</th>
+                            <th class="py-3.5 px-3 min-w-[200px]">Nama Produk</th>
+                            <th class="py-3.5 px-3 min-w-[170px]">Deskripsi / Ukuran</th>
+                            <th class="py-3.5 px-3 min-w-[170px]">Bahan Baku</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[115px]">Rangka</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[115px]">Anyam</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[115px]">Finishing</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[115px]">Aksesoris 1</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[115px]">Aksesoris 2</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[105px]">Label</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right bg-amber-500/15 text-amber-900 min-w-[90px]">OH (%)</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right bg-amber-500/15 text-amber-900 min-w-[115px]">Overhead (Rp)</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right bg-emerald-500/15 text-emerald-900 min-w-[90px]">Profit (%)</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right bg-emerald-500/15 text-emerald-900 min-w-[115px]">Profit (Rp)</th>
+                            <th class="admin-only hidden py-3.5 px-3 text-right min-w-[115px]">FOB Jakarta</th>
+                            <th class="py-3.5 px-4 text-right bg-brand-500/15 text-brand-900 min-w-[135px]">Harga Jual</th>
+                            <th class="py-3.5 px-4 text-center sticky right-0 bg-white/85 backdrop-blur-xl shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.08)]">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saved-data-table-body" class="divide-y divide-white/60 text-xs text-stone-800"></tbody>
+                </table>
+            </div>
+
+            <div id="table-empty-state" class="hidden p-12 text-center space-y-3">
+                <div class="w-12 h-12 bg-white/70 text-stone-500 rounded-full flex items-center justify-center mx-auto border border-white">
+                    <i data-lucide="folder-open" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-semibold text-stone-800 text-sm">Belum ada data yang sesuai</h3>
+                <p class="text-xs text-stone-600 max-w-sm mx-auto">Silakan tambahkan produk baru, impor dari Excel, atau ubah kata kunci filter tabel.</p>
+            </div>
+
+            <div id="table-pagination-footer" class="bg-white/40 border-t border-white/70 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <span id="table-page-info" class="text-stone-600 font-medium">Menampilkan 0 - 0 dari 0 data</span>
+                <div class="flex items-center space-x-2">
+                    <button type="button" id="btn-table-prev" onclick="changeTablePage(-1)" class="px-3 py-1.5 bg-white/70 border border-white/85 rounded-xl hover:bg-white disabled:opacity-40 font-medium transition cursor-pointer">Sebelumnya</button>
+                    <button type="button" id="btn-table-next" onclick="changeTablePage(1)" class="px-3 py-1.5 bg-white/70 border border-white/85 rounded-xl hover:bg-white disabled:opacity-40 font-medium transition cursor-pointer">Selanjutnya</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form (Tambah / Edit Produk & Kalkulasi Harga) -->
+    <div id="form-modal" class="fixed inset-0 z-[105] bg-stone-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-modal rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-white/65 pb-3">
+                <h3 id="form-modal-title" class="font-bold text-stone-900 text-base flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-5 h-5 text-brand-600"></i> Edit Data & Harga Produk ERP
+                </h3>
+                <button type="button" onclick="closeFormModal()" class="p-1.5 text-stone-500 hover:text-stone-800 rounded-lg hover:bg-white/60 cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="product-form" onsubmit="saveProduct(event)" class="space-y-4">
+                <input type="hidden" id="form-product-id" value="">
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Foto / Gambar Produk</label>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div id="image-preview" class="w-20 h-20 bg-white/60 border border-white/80 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0 p-1">
+                            <i data-lucide="image" class="w-8 h-8 text-stone-400"></i>
+                        </div>
+                        <div class="space-y-2 flex-grow">
+                            <input type="file" id="form-image-file" accept="image/*" onchange="handleImageUpload(event)" class="text-xs text-stone-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border file:border-white/80 file:text-xs file:font-semibold file:bg-brand-500/15 file:text-brand-800 hover:file:bg-brand-500/25 cursor-pointer">
+                            <input type="url" id="form-image-url" oninput="handleImageUrlInput(event)" placeholder="atau masukkan URL Foto..." class="glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Kode Barang ERP</label>
+                        <input type="text" id="form-code" required placeholder="Contoh: F0846.1" class="glass-input w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Kategori</label>
+                        <select id="form-category" required class="glass-input w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="Furniture">Furniture</option>
+                            <option value="Basket">Basket</option>
+                            <option value="Aksesoris">Aksesoris</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Nama Produk</label>
+                    <input type="text" id="form-name" required placeholder="Contoh: AELIN DINING CHAIR" class="glass-input w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Bahan Baku Utama</label>
+                        <input type="text" id="form-material" placeholder="Contoh: Kubu Grey Full" class="glass-input w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Deskripsi / Ukuran Produk</label>
+                        <input type="text" id="form-desc" placeholder="Contoh: 73 x 66 x 81 cm" class="glass-input w-full px-3 py-2 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <!-- Tabel Input Komponen Harga -->
+                <div class="glass-sub p-4 rounded-2xl space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/65 pb-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
+                            <i data-lucide="calculator" class="w-4 h-4 text-brand-600"></i> Rincian Komponen Harga (Rp)
+                        </h4>
+                        <span class="text-[11px] text-stone-600">Persentase Overhead & Profit dapat disesuaikan</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">Harga Rangka</label>
+                            <input type="number" id="price-rangka" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">Harga Anyam</label>
+                            <input type="number" id="price-anyam" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">Harga Finishing</label>
+                            <input type="number" id="price-finishing" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">Harga Aksesoris 1</label>
+                            <input type="number" id="price-aksesoris1" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">Harga Aksesoris 2</label>
+                            <input type="number" id="price-aksesoris2" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">Label</label>
+                            <input type="number" id="price-label" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="price-overhead-pct" class="text-[11px] font-semibold text-amber-900">Overhead (%)</label>
+                                <input type="number" id="price-overhead-pct" min="0" max="1000" step="0.1" value="10" oninput="calculateTotalPrice()" class="w-14 px-1.5 py-0.5 text-[11px] bg-white/80 border border-amber-300/80 text-amber-900 rounded-lg text-right font-mono font-bold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                            <input type="number" id="price-overhead" readonly value="0" class="price-input w-full px-3 py-1.5 text-xs bg-amber-500/15 border border-amber-300/60 text-amber-950 rounded-xl focus:outline-none text-right font-mono cursor-not-allowed">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="price-profit-pct" class="text-[11px] font-semibold text-emerald-900">Profit (%)</label>
+                                <input type="number" id="price-profit-pct" min="0" max="1000" step="0.1" value="30" oninput="calculateTotalPrice()" class="w-14 px-1.5 py-0.5 text-[11px] bg-white/80 border border-emerald-300/80 text-emerald-900 rounded-lg text-right font-mono font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            <input type="number" id="price-profit" readonly value="0" class="price-input w-full px-3 py-1.5 text-xs bg-emerald-500/15 border border-emerald-300/60 text-emerald-950 rounded-xl focus:outline-none text-right font-mono cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-stone-700 mb-1">FOB Jakarta</label>
+                            <input type="number" id="price-fob" min="0" step="any" value="0" oninput="calculateTotalPrice()" class="price-input glass-input w-full px-3 py-1.5 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-right font-mono">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5 pt-1">
+                        <div class="flex items-center justify-between text-xs text-stone-700 px-1">
+                            <span>Subtotal Biaya (Rangka s/d Label):</span>
+                            <span id="form-subtotal-display" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                        </div>
+                        <div class="bg-gradient-to-r from-brand-600 to-brand-700 text-white p-3 rounded-xl flex items-center justify-between shadow-md">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Total Harga Jual:</span>
+                            <span id="form-total-price-display" class="text-base font-bold font-mono">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-2 border-t border-white/65">
+                    <button type="button" onclick="closeFormModal()" class="px-4 py-2 text-xs font-medium text-stone-700 bg-white/65 border border-white/80 rounded-xl hover:bg-white cursor-pointer">Batal</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700 shadow-md cursor-pointer">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail View Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-[105] bg-stone-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-modal rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5">
+            <div class="flex items-start justify-between border-b border-white/65 pb-4">
+                <div>
+                    <span id="modal-category" class="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-800 mb-1">Category</span>
+                    <h3 id="modal-title" class="text-xl font-bold text-stone-900">Product Name</h3>
+                    <p id="modal-code" class="text-xs text-stone-600 font-mono">Kode ERP: -</p>
+                </div>
+                <button type="button" onclick="closeModal()" class="p-2 text-stone-500 hover:text-stone-800 rounded-full hover:bg-white/60 cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="modal-img-container" class="h-60 bg-white/65 rounded-2xl flex items-center justify-center text-stone-400 border border-white/85 relative overflow-hidden p-2"></div>
+
+            <div class="bg-emerald-500/15 border border-emerald-300/70 rounded-2xl p-4 flex items-center justify-between backdrop-blur-sm">
+                <div>
+                    <span class="text-xs font-semibold text-emerald-800 uppercase tracking-wider block">Harga Jual</span>
+                    <span id="modal-selling-subtitle" class="text-[11px] text-emerald-700"></span>
+                </div>
+                <span id="modal-selling-price" class="text-xl font-bold text-emerald-900 font-mono">Rp 0</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-sub p-4 rounded-2xl space-y-1">
+                    <span class="text-xs text-stone-500 block font-medium">Ukuran / Deskripsi Detail:</span>
+                    <p id="modal-desc" class="text-sm font-semibold text-stone-900 break-words"></p>
+                </div>
+                <div class="glass-sub p-4 rounded-2xl space-y-1">
+                    <span class="text-xs text-stone-500 block font-medium">Bahan Baku Utama:</span>
+                    <p id="modal-material" class="text-sm font-semibold text-stone-900 break-words"></p>
+                </div>
+            </div>
+
+            <div id="modal-cost-breakdown" class="admin-only hidden glass-sub p-4 rounded-2xl space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5 border-b border-white/65 pb-2">
+                    <i data-lucide="receipt" class="w-3.5 h-3.5 text-brand-600"></i> Rincian Komponen Harga (Admin)
+                </h4>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">Rangka:</span>
+                        <span id="detail-rangka" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">Anyam:</span>
+                        <span id="detail-anyam" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">Finishing:</span>
+                        <span id="detail-finishing" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">Aksesoris 1:</span>
+                        <span id="detail-aksesoris1" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">Aksesoris 2:</span>
+                        <span id="detail-aksesoris2" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">Label:</span>
+                        <span id="detail-label" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                    <div class="bg-amber-500/15 p-2 rounded-lg border border-amber-300/60 flex justify-between">
+                        <span id="detail-overhead-label" class="text-amber-900">Overhead (10%):</span>
+                        <span id="detail-overhead" class="font-mono font-semibold text-amber-950">Rp 0</span>
+                    </div>
+                    <div class="bg-emerald-500/15 p-2 rounded-lg border border-emerald-300/60 flex justify-between">
+                        <span id="detail-profit-label" class="text-emerald-900">Profit (30%):</span>
+                        <span id="detail-profit" class="font-mono font-semibold text-emerald-950">Rp 0</span>
+                    </div>
+                    <div class="bg-white/65 p-2 rounded-lg border border-white/80 flex justify-between">
+                        <span class="text-stone-600">FOB Jakarta:</span>
+                        <span id="detail-fob" class="font-mono font-semibold text-stone-900">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button type="button" id="modal-delete-btn" class="admin-only hidden px-3.5 py-2 text-xs font-semibold text-red-600 bg-red-500/15 hover:bg-red-500/25 border border-red-300/60 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus Produk
+                </button>
+                <div class="flex space-x-2 ml-auto">
+                    <button type="button" id="modal-edit-btn" class="admin-only hidden px-4 py-2 text-xs font-semibold bg-stone-800/90 text-white rounded-xl hover:bg-stone-900 flex items-center gap-1.5 cursor-pointer">
+                        <i data-lucide="edit-2" class="w-3.5 h-3.5"></i> Edit Produk
+                    </button>
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-medium bg-white/65 border border-white/85 rounded-xl hover:bg-white cursor-pointer">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="fixed inset-0 z-[105] bg-stone-900/40 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-modal rounded-3xl max-w-md w-full p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/65 pb-3">
+                <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                    <i data-lucide="heart" class="w-5 h-5 text-amber-600"></i> Produk Pilihan / Favorit
+                </h3>
+                <button type="button" onclick="toggleWishlistModal()" class="p-1 text-stone-500 hover:text-stone-800 cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="wishlist-items" class="max-h-60 overflow-y-auto space-y-2"></div>
+
+            <div class="pt-3 border-t border-white/65 flex justify-between items-center">
+                <span id="wishlist-total" class="text-xs text-stone-600">0 Item disimpan</span>
+                <button type="button" onclick="window.print()" class="px-4 py-2 bg-stone-800/90 text-white text-xs rounded-xl font-medium hover:bg-stone-900 cursor-pointer">Cetak Daftar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================================
+        // TOAST & CONFIRMATION MODAL HELPERS
+        // =====================================================================
+        let toastTimeout = null;
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast-notification');
+            const icon = document.getElementById('toast-icon');
+            const msgEl = document.getElementById('toast-message');
+            if (!toast || !msgEl) return;
+
+            msgEl.textContent = message;
+            if (icon) {
+                icon.setAttribute('data-lucide', type === 'error' ? 'alert-circle' : 'check-circle');
+                icon.className = type === 'error'
+                    ? 'w-5 h-5 text-red-400 flex-shrink-0'
+                    : 'w-5 h-5 text-emerald-400 flex-shrink-0';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+
+            toast.classList.remove('hidden');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        function showConfirmDialog(title, text, onConfirm) {
+            const modal = document.getElementById('confirm-modal');
+            const titleEl = document.getElementById('confirm-modal-title');
+            const textEl = document.getElementById('confirm-modal-text');
+            const yesBtn = document.getElementById('confirm-modal-yes-btn');
+            if (!modal) return;
+
+            titleEl.textContent = title;
+            textEl.textContent = text;
+            yesBtn.onclick = async () => {
+                closeConfirmModal();
+                if (typeof onConfirm === 'function') {
+                    await onConfirm();
+                }
+            };
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function closePriceImportResultModal() {
+            const modal = document.getElementById('price-import-result-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // =====================================================================
+        // GLOBAL MARGIN & PRICING HELPERS
+        // =====================================================================
+        const MARGIN_STORAGE_KEY = 'ERP_Global_Margins';
+        let globalMargins = { overheadPct: 10, profitPct: 30 };
+        let isInlineEditEnabled = true;
+
+        function loadGlobalMargins() {
+            try {
+                const saved = localStorage.getItem(MARGIN_STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (typeof parsed.overheadPct === 'number' && !isNaN(parsed.overheadPct)) {
+                        globalMargins.overheadPct = parsed.overheadPct;
+                    }
+                    if (typeof parsed.profitPct === 'number' && !isNaN(parsed.profitPct)) {
+                        globalMargins.profitPct = parsed.profitPct;
+                    }
+                }
+            } catch (e) {
+                console.warn("Gagal memuat pengaturan margin global:", e);
+            }
+            const ohInput = document.getElementById('global-overhead-input');
+            const prInput = document.getElementById('global-profit-input');
+            if (ohInput) ohInput.value = globalMargins.overheadPct;
+            if (prInput) prInput.value = globalMargins.profitPct;
+        }
+
+        function updateGlobalMarginDefaults() {
+            const ohVal = parseFloat(document.getElementById('global-overhead-input').value);
+            const prVal = parseFloat(document.getElementById('global-profit-input').value);
+            globalMargins.overheadPct = isNaN(ohVal) || ohVal < 0 ? 0 : ohVal;
+            globalMargins.profitPct = isNaN(prVal) || prVal < 0 ? 0 : prVal;
+            try {
+                localStorage.setItem(MARGIN_STORAGE_KEY, JSON.stringify(globalMargins));
+            } catch (e) {}
+            showToast(`Default margin baru disimpan: Overhead ${globalMargins.overheadPct}% & Profit ${globalMargins.profitPct}%`);
+        }
+
+        function applyGlobalMarginsToAll() {
+            if (currentUserRole !== 'admin') return;
+            updateGlobalMarginDefaults();
+            if (products.length === 0) {
+                showToast("Belum ada data produk di penyimpanan.", "error");
+                return;
+            }
+            showConfirmDialog(
+                "Terapkan Margin ke Semua Produk",
+                `Terapkan Overhead ${globalMargins.overheadPct}% dan Profit ${globalMargins.profitPct}% ke seluruh ${products.length} produk tersimpan?`,
+                async () => {
+                    products = products.map(p => {
+                        const norm = normalizePricing({
+                            ...p.pricing,
+                            overheadPct: globalMargins.overheadPct,
+                            profitPct: globalMargins.profitPct
+                        });
+                        return { ...p, pricing: norm.pricing, sellingPrice: norm.sellingPrice };
+                    });
+                    await saveAllProductsToDB(products);
+                    syncAllViews();
+                    showToast(`Berhasil memperbarui margin ${products.length} produk!`);
+                }
+            );
+        }
+
+        function toggleInlineEditMode() {
+            if (currentUserRole !== 'admin') return;
+            isInlineEditEnabled = !isInlineEditEnabled;
+            const btn = document.getElementById('btn-toggle-inline-edit');
+            const label = document.getElementById('inline-edit-btn-label');
+
+            if (isInlineEditEnabled) {
+                btn.className = "px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-brand-600 text-white shadow-sm hover:bg-brand-700 cursor-pointer";
+                label.textContent = "Mode Edit Langsung: ON";
+            } else {
+                btn.className = "px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 bg-white/70 text-stone-700 border border-white/80 hover:bg-white cursor-pointer";
+                label.textContent = "Mode Edit Langsung: OFF";
+            }
+            renderDataTable();
+        }
+
+        function formatRupiah(amount) {
+            const num = Math.round(Number(amount) || 0);
+            return 'Rp ' + num.toLocaleString('id-ID');
+        }
+
+        function normalizePricing(rawPricing) {
+            const pr = rawPricing || {};
+            const rangka = Number(pr.rangka) || 0;
+            const anyam = Number(pr.anyam) || 0;
+            const finishing = Number(pr.finishing) || 0;
+            const aksesoris1 = Number(pr.aksesoris1) || 0;
+            const aksesoris2 = Number(pr.aksesoris2) || 0;
+            const label = Number(pr.label) || 0;
+            const fob = Number(pr.fob) || 0;
+
+            const overheadPct = (pr.overheadPct !== undefined && pr.overheadPct !== null && pr.overheadPct !== '' && !isNaN(Number(pr.overheadPct)))
+                ? Number(pr.overheadPct)
+                : globalMargins.overheadPct;
+            const profitPct = (pr.profitPct !== undefined && pr.profitPct !== null && pr.profitPct !== '' && !isNaN(Number(pr.profitPct)))
+                ? Number(pr.profitPct)
+                : globalMargins.profitPct;
+
+            const subtotal = rangka + anyam + finishing + aksesoris1 + aksesoris2 + label;
+            const overhead = Math.round(subtotal * (overheadPct / 100));
+            const profit = Math.round(subtotal * (profitPct / 100));
+            const sellingPrice = subtotal + overhead + profit + fob;
+
+            return {
+                pricing: {
+                    rangka,
+                    anyam,
+                    finishing,
+                    aksesoris1,
+                    aksesoris2,
+                    label,
+                    overheadPct,
+                    overhead,
+                    profitPct,
+                    profit,
+                    fob
+                },
+                subtotal,
+                sellingPrice
+            };
+        }
+
+        function calculateTotalPrice() {
+            const rawPricing = {
+                rangka: document.getElementById('price-rangka').value,
+                anyam: document.getElementById('price-anyam').value,
+                finishing: document.getElementById('price-finishing').value,
+                aksesoris1: document.getElementById('price-aksesoris1').value,
+                aksesoris2: document.getElementById('price-aksesoris2').value,
+                label: document.getElementById('price-label').value,
+                overheadPct: document.getElementById('price-overhead-pct').value,
+                profitPct: document.getElementById('price-profit-pct').value,
+                fob: document.getElementById('price-fob').value
+            };
+
+            const { pricing, subtotal, sellingPrice } = normalizePricing(rawPricing);
+
+            document.getElementById('price-overhead').value = pricing.overhead;
+            document.getElementById('price-profit').value = pricing.profit;
+            document.getElementById('form-subtotal-display').textContent = formatRupiah(subtotal);
+            document.getElementById('form-total-price-display').textContent = formatRupiah(sellingPrice);
+            return sellingPrice;
+        }
+
+        // =====================================================================
+        // AUTH & ROLE SYSTEM (WITH "INGAT SAYA")
+        // =====================================================================
+        let currentUserRole = null; // 'admin' | 'guest'
+        const ADMIN_PASSWORD_HASH = "41122129";
+        const REMEMBER_SESSION_KEY = 'ERP_Remembered_Session';
+
+        function saveRememberedSession(role, remember) {
+            try {
+                if (remember && role === 'admin') {
+                    localStorage.setItem(REMEMBER_SESSION_KEY, JSON.stringify({
+                        role: 'admin',
+                        token: btoa(ADMIN_PASSWORD_HASH)
+                    }));
+                } else {
+                    localStorage.removeItem(REMEMBER_SESSION_KEY);
+                }
+            } catch (e) {}
+        }
+
+        function restoreRememberedSession() {
+            try {
+                const raw = localStorage.getItem(REMEMBER_SESSION_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.role === 'admin' && parsed.token === btoa(ADMIN_PASSWORD_HASH)) {
+                    currentUserRole = 'admin';
+                    applyRolePermissions();
+                    const modal = document.getElementById('login-modal');
+                    if (modal) modal.classList.add('hidden');
+                    showToast("Login otomatis Admin aktif (Ingat Saya)");
+                    return true;
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function switchLoginTab(tab) {
+            const guestBtn = document.getElementById('tab-guest-btn');
+            const adminBtn = document.getElementById('tab-admin-btn');
+            const guestForm = document.getElementById('guest-login-form');
+            const adminForm = document.getElementById('admin-login-form');
+
+            if (tab === 'guest') {
+                guestBtn.className = "py-2 text-xs font-semibold rounded-xl transition bg-white text-stone-800 shadow-sm cursor-pointer";
+                adminBtn.className = "py-2 text-xs font-semibold rounded-xl transition text-stone-600 hover:text-stone-900 cursor-pointer";
+                guestForm.classList.remove('hidden');
+                adminForm.classList.add('hidden');
+            } else {
+                adminBtn.className = "py-2 text-xs font-semibold rounded-xl transition bg-white text-stone-800 shadow-sm cursor-pointer";
+                guestBtn.className = "py-2 text-xs font-semibold rounded-xl transition text-stone-600 hover:text-stone-900 cursor-pointer";
+                adminForm.classList.remove('hidden');
+                guestForm.classList.add('hidden');
+                setTimeout(() => {
+                    const passEl = document.getElementById('admin-password');
+                    if (passEl) passEl.focus();
+                }, 50);
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function loginAsGuest() {
+            currentUserRole = 'guest';
+            saveRememberedSession(null, false);
+            applyRolePermissions();
+            document.getElementById('login-modal').classList.add('hidden');
+            showToast("Masuk sebagai Tamu (View Only)");
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const passInput = document.getElementById('admin-password');
+            const errorMsg = document.getElementById('login-error-msg');
+            const rememberCheckbox = document.getElementById('remember-me-checkbox');
+            const passVal = passInput ? passInput.value : '';
+
+            if (passVal === ADMIN_PASSWORD_HASH) {
+                currentUserRole = 'admin';
+                const shouldRemember = rememberCheckbox ? rememberCheckbox.checked : true;
+                saveRememberedSession('admin', shouldRemember);
+                if (errorMsg) errorMsg.classList.add('hidden');
+                applyRolePermissions();
+                document.getElementById('login-modal').classList.add('hidden');
+                showToast(shouldRemember ? "Berhasil masuk Admin (Ingat Saya aktif)" : "Berhasil masuk sebagai Administrator");
+            } else {
+                if (errorMsg) errorMsg.classList.remove('hidden');
+                if (passInput) passInput.focus();
+            }
+        }
+
+        function logout() {
+            currentUserRole = null;
+            saveRememberedSession(null, false);
+            const passInput = document.getElementById('admin-password');
+            const errorMsg = document.getElementById('login-error-msg');
+            if (passInput) passInput.value = '';
+            if (errorMsg) errorMsg.classList.add('hidden');
+            switchLoginTab('guest');
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        function applyRolePermissions() {
+            const roleBadge = document.getElementById('user-role-badge');
+            const adminElements = document.querySelectorAll('.admin-only');
+
+            if (currentUserRole === 'admin') {
+                roleBadge.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand-600"></i> Admin`;
+                adminElements.forEach(el => {
+                    el.classList.remove('hidden');
+                    if (el.id === 'btn-export-excel') el.classList.add('sm:flex');
+                });
+            } else {
+                roleBadge.innerHTML = `<i data-lucide="eye" class="w-3.5 h-3.5 text-stone-500"></i> Tamu`;
+                adminElements.forEach(el => {
+                    el.classList.add('hidden');
+                    if (el.id === 'btn-export-excel') el.classList.remove('sm:flex');
+                });
+            }
+
+            syncAllViews();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // =====================================================================
+        // INITIAL DATA & INDEXEDDB ENGINE
+        // =====================================================================
+        const initialExcelData = [
+            { id: 1, code: "F0846.1", category: "Furniture", name: "AELIN DINING CHAIR", desc: "UKURAN DI PAK RUDI", material: "Rotan Poles Rotan Core Lesio Kulit", image: "", ...normalizePricing({ rangka: 250000, anyam: 180000, finishing: 95000, aksesoris1: 25000, aksesoris2: 15000, label: 5000, fob: 35000 }) },
+            { id: 2, code: "F0844.1", category: "Furniture", name: "zaturika lounge chair", desc: "73 x 66 x 81 cm", material: "Rotan Poles polyrattan peel", image: "", ...normalizePricing({ rangka: 300000, anyam: 220000, finishing: 110000, aksesoris1: 30000, aksesoris2: 0, label: 5000, fob: 40000 }) },
+            { id: 3, code: "F0363.39", category: "Furniture", name: "ELODIE ARM CHAIR 39", desc: "65x82x70 cm", material: "Alumunium polyrattan round cord", image: "", ...normalizePricing({}) },
+            { id: 4, code: "F0837.2", category: "Furniture", name: "KINGSTON SIDE TABLE", desc: "Ø50x50", material: "Sibaliu Jawit Natural", image: "", ...normalizePricing({}) },
+            { id: 5, code: "F0368.1", category: "Furniture", name: "QUINCY SIDE TABLE", desc: "32*32*50cm", material: "Rotan Poles Lesio Kulit", image: "", ...normalizePricing({}) },
+            { id: 6, code: "B0490.4", category: "Basket", name: "VERONA RECTANGULAR BASKET", desc: "48*31*16H 25*20*14H 25*20*14H", material: "Kubu Grey Full", image: "", ...normalizePricing({ rangka: 45000, anyam: 65000, finishing: 25000, aksesoris1: 10000, aksesoris2: 5000, label: 3000, fob: 10000 }) },
+            { id: 7, code: "B0489.4", category: "Basket", name: "VERONA PLANTER ROUND", desc: "DIA 28*20H DIA 22*16H DIA 16*14H", material: "Kubu Grey Full", image: "", ...normalizePricing({}) },
+            { id: 8, code: "B0488.4", category: "Basket", name: "VERONA SQUARE PLANTER WITH PLASTIC LINER SET 3", desc: "27*27*25H 21*21*20H 15*15*15H", material: "Kubu Grey Full", image: "", ...normalizePricing({}) },
+            { id: 9, code: "A0298.18", category: "Aksesoris", name: "PARASOL NATURAL WITH POLE AND BASE", desc: "Dia 220x45 cm - Umbrella Top", material: "Kubu Natural Kayu Jati Besi Behel", image: "", ...normalizePricing({}) },
+            { id: 10, code: "F0608.10", category: "Furniture", name: "NEW BALI ARMCHAIR - MN", desc: "54*59*94H", material: "Manao Lesio Kulit", image: "", ...normalizePricing({}) }
+        ];
+
+        const DB_NAME = 'ERP_Catalog_DB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'products';
+        let db = null;
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onerror = (e) => reject('IndexedDB error: ' + (e.target.errorCode || 'unknown'));
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve(db);
+                };
+                request.onupgradeneeded = (e) => {
+                    const database = e.target.result;
+                    if (!database.objectStoreNames.contains(STORE_NAME)) {
+                        database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+            });
+        }
+
+        function loadProductsFromDB() {
+            return new Promise((resolve, reject) => {
+                if (!db) return resolve([]);
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = (e) => reject(e);
+            });
+        }
+
+        function saveAllProductsToDB(items) {
+            return new Promise((resolve, reject) => {
+                if (!db) return resolve();
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const clearReq = store.clear();
+                clearReq.onsuccess = () => {
+                    for (const item of items) {
+                        store.put(item);
+                    }
+                };
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = (e) => reject(e);
+            });
+        }
+
+        function putProductToDB(item) {
+            return new Promise((resolve, reject) => {
+                if (!db) return resolve();
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                store.put(item);
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = (e) => reject(e);
+            });
+        }
+
+        function deleteProductFromDB(id) {
+            return new Promise((resolve, reject) => {
+                if (!db) return resolve();
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                store.delete(id);
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = (e) => reject(e);
+            });
+        }
+
+        // =====================================================================
+        // APPLICATION STATE
+        // =====================================================================
+        let products = [];
+        let filteredProducts = [];
+        let wishlist = JSON.parse(localStorage.getItem('ERP_Wishlist') || '[]');
+        let currentPage = 1;
+        const itemsPerPage = 12;
+        let viewMode = 'grid';
+        let selectedCategory = 'Semua';
+        let activeMainPage = 'catalog';
+
+        // Table state
+        let tableCurrentPage = 1;
+        let filteredTableProducts = [];
+
+        function getNextProductId() {
+            const maxId = products.reduce((max, p) => Math.max(max, Number(p.id) || 0), 0);
+            return maxId + 1;
+        }
+
+        function sortProductList(list, sortBy) {
+            const arr = [...list];
+            if (sortBy === 'latest') {
+                arr.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+            } else if (sortBy === 'oldest') {
+                arr.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
+            } else if (sortBy === 'code-asc') {
+                arr.sort((a, b) => String(a.code || '').localeCompare(String(b.code || '')));
+            } else if (sortBy === 'name-asc') {
+                arr.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+            } else if (sortBy === 'price-desc') {
+                arr.sort((a, b) => (Number(b.sellingPrice) || 0) - (Number(a.sellingPrice) || 0));
+            } else if (sortBy === 'price-asc') {
+                arr.sort((a, b) => (Number(a.sellingPrice) || 0) - (Number(b.sellingPrice) || 0));
+            } else if (sortBy === 'category') {
+                arr.sort((a, b) => String(a.category || '').localeCompare(String(b.category || '')));
+            }
+            return arr;
+        }
+
+        function syncAllViews() {
+            const badge = document.getElementById('nav-table-count-badge');
+            if (badge) badge.textContent = products.length;
+            populateCategories();
+            populateMaterials();
+            populateTableCategories();
+            applyFilters();
+            renderDataTable();
+            updateWishlistBadge();
+        }
+
+        // =====================================================================
+        // MAIN PAGE SWITCHER
+        // =====================================================================
+        function switchMainPage(page) {
+            activeMainPage = page;
+            const catalogView = document.getElementById('page-catalog-view');
+            const tableView = document.getElementById('page-table-view');
+            const navCatalogBtn = document.getElementById('nav-page-catalog');
+            const navTableBtn = document.getElementById('nav-page-table');
+
+            if (page === 'catalog') {
+                catalogView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+                navCatalogBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-white/90 text-brand-700 shadow-sm cursor-pointer";
+                navTableBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-stone-600 hover:text-stone-900 cursor-pointer";
+                applyFilters();
+            } else {
+                catalogView.classList.add('hidden');
+                tableView.classList.remove('hidden');
+                navTableBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-white/90 text-brand-700 shadow-sm cursor-pointer";
+                navCatalogBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-stone-600 hover:text-stone-900 cursor-pointer";
+                renderDataTable();
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // =====================================================================
+        // CATALOG FILTERS, SORTING & RENDERING
+        // =====================================================================
+        function populateCategories() {
+            const container = document.getElementById('category-filters');
+            if (!container) return;
+            const cats = ['Semua', 'Furniture', 'Basket', 'Aksesoris', 'Lainnya'];
+            const extraCats = [...new Set(products.map(p => p.category).filter(c => c && !cats.includes(c)))];
+            const allCats = [...cats, ...extraCats];
+
+            container.innerHTML = allCats.map(cat => {
+                const count = cat === 'Semua'
+                    ? products.length
+                    : products.filter(p => p.category === cat).length;
+                const active = selectedCategory === cat;
+                return `
+                    <button type="button" onclick="selectCategory('${cat.replace(/'/g, "\\'")}')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition cursor-pointer ${
+                        active
+                            ? 'bg-brand-600 text-white shadow-sm'
+                            : 'bg-white/45 hover:bg-white/75 text-stone-700 border border-white/65'
+                    }">
+                        <span>${cat}</span>
+                        <span class="font-mono text-[11px] ${active ? 'text-white/90' : 'text-stone-500'}">${count}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            currentPage = 1;
+            populateCategories();
+            applyFilters();
+        }
+
+        function populateMaterials() {
+            const select = document.getElementById('material-filter');
+            if (!select) return;
+            const currentVal = select.value;
+            const materials = [...new Set(products.map(p => (p.material || '').trim()).filter(Boolean))].sort();
+            select.innerHTML = `<option value="">Semua Bahan</option>` + materials.map(m =>
+                `<option value="${m.replace(/"/g, '&quot;')}">${m}</option>`
+            ).join('');
+            if (materials.includes(currentVal)) select.value = currentVal;
+        }
+
+        function resetFilters() {
+            selectedCategory = 'Semua';
+            const searchEl = document.getElementById('search-input');
+            const matEl = document.getElementById('material-filter');
+            const sortEl = document.getElementById('sort-select');
+            if (searchEl) searchEl.value = '';
+            if (matEl) matEl.value = '';
+            if (sortEl) sortEl.value = 'latest';
+            currentPage = 1;
+            populateCategories();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+            const material = (document.getElementById('material-filter')?.value || '').trim();
+            const sortBy = document.getElementById('sort-select')?.value || 'latest';
+
+            filteredProducts = products.filter(p => {
+                const matchCat = selectedCategory === 'Semua' || p.category === selectedCategory;
+                const matchMat = !material || (p.material || '').trim() === material;
+                const matchQuery = !query ||
+                    String(p.code || '').toLowerCase().includes(query) ||
+                    String(p.name || '').toLowerCase().includes(query) ||
+                    String(p.desc || '').toLowerCase().includes(query) ||
+                    String(p.material || '').toLowerCase().includes(query) ||
+                    String(p.category || '').toLowerCase().includes(query);
+                return matchCat && matchMat && matchQuery;
+            });
+
+            filteredProducts = sortProductList(filteredProducts, sortBy);
+
+            const countEl = document.getElementById('filtered-count');
+            if (countEl) countEl.textContent = `${filteredProducts.length} Produk`;
+
+            const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
+            if (currentPage > totalPages) currentPage = 1;
+
+            renderProducts();
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            const gridBtn = document.getElementById('btn-view-grid');
+            const listBtn = document.getElementById('btn-view-list');
+            const container = document.getElementById('products-container');
+
+            if (mode === 'grid') {
+                gridBtn.className = "p-1.5 rounded-lg bg-white/85 text-stone-800 shadow-sm cursor-pointer";
+                listBtn.className = "p-1.5 rounded-lg text-stone-500 hover:bg-white/60 cursor-pointer";
+                container.className = "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4";
+            } else {
+                listBtn.className = "p-1.5 rounded-lg bg-white/85 text-stone-800 shadow-sm cursor-pointer";
+                gridBtn.className = "p-1.5 rounded-lg text-stone-500 hover:bg-white/60 cursor-pointer";
+                container.className = "flex flex-col gap-3";
+            }
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            const emptyState = document.getElementById('empty-state');
+            const pagination = document.getElementById('pagination-container');
+            if (!container) return;
+
+            if (filteredProducts.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                pagination.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            pagination.classList.remove('hidden');
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const pageItems = filteredProducts.slice(start, start + itemsPerPage);
+            const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
+
+            document.getElementById('page-info').textContent = `Halaman ${currentPage} dari ${totalPages} (${filteredProducts.length} item)`;
+            document.getElementById('btn-prev-page').disabled = currentPage <= 1;
+            document.getElementById('btn-next-page').disabled = currentPage >= totalPages;
+
+            container.innerHTML = pageItems.map(p => {
+                const isWish = wishlist.includes(p.id);
+                const selling = p.sellingPrice || normalizePricing(p.pricing).sellingPrice;
+                const imgHtml = p.image
+                    ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain">`
+                    : `<div class="flex flex-col items-center justify-center text-stone-400"><i data-lucide="image" class="w-8 h-8 mb-1"></i><span class="text-[10px]">No Image</span></div>`;
+
+                if (viewMode === 'list') {
+                    return `
+                        <div class="glass-card rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition">
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div class="w-16 h-16 rounded-xl bg-white/70 border border-white/85 flex items-center justify-center overflow-hidden flex-shrink-0 p-1 cursor-pointer"
+                                     onmouseenter="showHoverPopup(event, ${p.id})" onmousemove="moveHoverPopup(event)" onmouseleave="hideHoverPopup()"
+                                     onclick="openDetailModal(${p.id})">
+                                    ${imgHtml}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-900">${p.code || '-'}</span>
+                                        <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-white/60 text-stone-700 border border-white/80">${p.category || 'Lainnya'}</span>
+                                    </div>
+                                    <h3 onclick="openDetailModal(${p.id})" class="font-bold text-sm text-stone-900 truncate mt-1 cursor-pointer hover:text-brand-700">${p.name || '-'}</h3>
+                                    <p class="text-xs text-stone-600 truncate">${p.desc || '-'} • <span class="text-stone-500">${p.material || '-'}</span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                                <span class="font-mono font-bold text-sm text-emerald-800">${formatRupiah(selling)}</span>
+                                <button type="button" onclick="toggleWishlist(${p.id})" class="p-2 rounded-xl border border-white/80 bg-white/60 hover:bg-white transition cursor-pointer ${isWish ? 'text-amber-600' : 'text-stone-400'}">
+                                    <i data-lucide="heart" class="w-4 h-4 ${isWish ? 'fill-current' : ''}"></i>
+                                </button>
+                                ${currentUserRole === 'admin' ? `
+                                    <button type="button" onclick="openFormModal(${p.id})" class="p-2 rounded-xl border border-white/80 bg-white/60 hover:bg-white text-stone-700 transition cursor-pointer" title="Edit">
+                                        <i data-lucide="edit-2" class="w-4 h-4"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="glass-card rounded-2xl p-4 flex flex-col justify-between gap-3 transition">
+                        <div>
+                            <div class="relative h-44 bg-white/65 rounded-xl border border-white/85 flex items-center justify-center overflow-hidden p-2 mb-3 cursor-pointer"
+                                 onmouseenter="showHoverPopup(event, ${p.id})" onmousemove="moveHoverPopup(event)" onmouseleave="hideHoverPopup()"
+                                 onclick="openDetailModal(${p.id})">
+                                ${imgHtml}
+                                <button type="button" onclick="event.stopPropagation(); toggleWishlist(${p.id})" class="absolute top-2 right-2 p-2 rounded-xl bg-white/80 hover:bg-white border border-white shadow-sm transition cursor-pointer ${isWish ? 'text-amber-600' : 'text-stone-400'}" title="Simpan ke Favorit">
+                                    <i data-lucide="heart" class="w-4 h-4 ${isWish ? 'fill-current' : ''}"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-900">${p.code || '-'}</span>
+                                <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-white/60 text-stone-700 border border-white/80">${p.category || 'Lainnya'}</span>
+                            </div>
+                            <h3 onclick="openDetailModal(${p.id})" class="font-bold text-sm text-stone-900 line-clamp-1 cursor-pointer hover:text-brand-700">${p.name || '-'}</h3>
+                            <p class="text-xs text-stone-600 line-clamp-1 mt-0.5">${p.desc || '-'}</p>
+                            <p class="text-[11px] text-stone-500 line-clamp-1 mt-0.5">${p.material || '-'}</p>
+                        </div>
+
+                        <div class="pt-3 border-t border-white/65 flex items-center justify-between gap-2">
+                            <span class="font-mono font-bold text-sm text-emerald-800">${formatRupiah(selling)}</span>
+                            <div class="flex items-center gap-1.5">
+                                ${currentUserRole === 'admin' ? `
+                                    <button type="button" onclick="openFormModal(${p.id})" class="p-1.5 rounded-lg bg-white/65 hover:bg-white border border-white/80 text-stone-700 transition cursor-pointer" title="Edit Produk">
+                                        <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                ` : ''}
+                                <button type="button" onclick="openDetailModal(${p.id})" class="px-2.5 py-1.5 rounded-lg bg-stone-800/90 hover:bg-stone-900 text-white text-[11px] font-semibold transition cursor-pointer">
+                                    Detail
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function changePage(delta) {
+            const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
+            const next = currentPage + delta;
+            if (next >= 1 && next <= totalPages) {
+                currentPage = next;
+                renderProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // =====================================================================
+        // HOVER IMAGE POPUP
+        // =====================================================================
+        function showHoverPopup(e, id) {
+            const prod = products.find(p => p.id === id);
+            if (!prod || !prod.image) return;
+            const popup = document.getElementById('hover-image-popup');
+            const img = document.getElementById('hover-popup-img');
+            const title = document.getElementById('hover-popup-title');
+            if (!popup || !img || !title) return;
+
+            img.src = prod.image;
+            title.textContent = `${prod.code || ''} - ${prod.name || ''}`;
+            popup.classList.remove('hidden');
+            moveHoverPopup(e);
+        }
+
+        function moveHoverPopup(e) {
+            const popup = document.getElementById('hover-image-popup');
+            if (!popup || popup.classList.contains('hidden')) return;
+            const offset = 18;
+            const x = Math.min(window.innerWidth - 360, e.clientX + offset);
+            const y = Math.min(window.innerHeight - 360, e.clientY + offset);
+            popup.style.left = `${Math.max(10, x)}px`;
+            popup.style.top = `${Math.max(10, y)}px`;
+        }
+
+        function hideHoverPopup() {
+            const popup = document.getElementById('hover-image-popup');
+            if (popup) popup.classList.add('hidden');
+        }
+
+        // =====================================================================
+        // DATA TABLE VIEW, KPI & INLINE EDITING
+        // =====================================================================
+        function populateTableCategories() {
+            const select = document.getElementById('table-category-filter');
+            if (!select) return;
+            const currentVal = select.value || 'Semua';
+            const baseCats = ['Semua', 'Furniture', 'Basket', 'Aksesoris', 'Lainnya'];
+            const extra = [...new Set(products.map(p => p.category).filter(c => c && !baseCats.includes(c)))];
+            const all = [...baseCats, ...extra];
+
+            select.innerHTML = all.map(c => `<option value="${c}">${c === 'Semua' ? 'Semua Kategori' : c}</option>`).join('');
+            if (all.includes(currentVal)) select.value = currentVal;
+        }
+
+        function resetTableFilters() {
+            const s = document.getElementById('table-search-input');
+            const c = document.getElementById('table-category-filter');
+            const sort = document.getElementById('table-sort-select');
+            const per = document.getElementById('table-per-page');
+            if (s) s.value = '';
+            if (c) c.value = 'Semua';
+            if (sort) sort.value = 'latest';
+            if (per) per.value = '25';
+            tableCurrentPage = 1;
+            renderDataTable();
+        }
+
+        function resetTablePageAndRender() {
+            tableCurrentPage = 1;
+            renderDataTable();
+        }
+
+        function updateTableKPIs(items) {
+            const totalProducts = items.length;
+            const categories = new Set(items.map(p => (p.category || 'Lainnya').trim()).filter(Boolean));
+            const totalSelling = items.reduce((sum, p) => sum + (Number(p.sellingPrice) || normalizePricing(p.pricing).sellingPrice || 0), 0);
+            const avgSelling = totalProducts > 0 ? Math.round(totalSelling / totalProducts) : 0;
+
+            document.getElementById('kpi-total-products').textContent = `${totalProducts} Item`;
+            document.getElementById('kpi-total-categories').textContent = `${categories.size} Kategori`;
+            document.getElementById('kpi-avg-price').textContent = formatRupiah(avgSelling);
+            document.getElementById('kpi-total-value').textContent = formatRupiah(totalSelling);
+        }
+
+        function renderDataTable() {
+            const tbody = document.getElementById('saved-data-table-body');
+            const emptyState = document.getElementById('table-empty-state');
+            const footer = document.getElementById('table-pagination-footer');
+            if (!tbody) return;
+
+            const query = (document.getElementById('table-search-input')?.value || '').toLowerCase().trim();
+            const cat = document.getElementById('table-category-filter')?.value || 'Semua';
+            const sortBy = document.getElementById('table-sort-select')?.value || 'latest';
+            const perPageVal = document.getElementById('table-per-page')?.value || '25';
+
+            filteredTableProducts = products.filter(p => {
+                const matchCat = cat === 'Semua' || p.category === cat;
+                const matchQuery = !query ||
+                    String(p.code || '').toLowerCase().includes(query) ||
+                    String(p.name || '').toLowerCase().includes(query) ||
+                    String(p.desc || '').toLowerCase().includes(query) ||
+                    String(p.material || '').toLowerCase().includes(query) ||
+                    String(p.category || '').toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
+
+            filteredTableProducts = sortProductList(filteredTableProducts, sortBy);
+            updateTableKPIs(filteredTableProducts);
+
+            if (filteredTableProducts.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                footer.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            footer.classList.remove('hidden');
+
+            const perPage = perPageVal === 'all' ? filteredTableProducts.length : Math.max(1, parseInt(perPageVal, 10) || 25);
+            const totalPages = Math.max(1, Math.ceil(filteredTableProducts.length / perPage));
+            if (tableCurrentPage > totalPages) tableCurrentPage = 1;
+
+            const startIdx = (tableCurrentPage - 1) * perPage;
+            const endIdx = Math.min(filteredTableProducts.length, startIdx + perPage);
+            const rows = filteredTableProducts.slice(startIdx, endIdx);
+
+            document.getElementById('table-page-info').textContent = `Menampilkan ${startIdx + 1} - ${endIdx} dari ${filteredTableProducts.length} data`;
+            document.getElementById('btn-table-prev').disabled = tableCurrentPage <= 1;
+            document.getElementById('btn-table-next').disabled = tableCurrentPage >= totalPages;
+
+            const canInlineEdit = currentUserRole === 'admin' && isInlineEditEnabled;
+
+            tbody.innerHTML = rows.map((p, idx) => {
+                const norm = normalizePricing(p.pricing);
+                const pr = norm.pricing;
+                const selling = norm.sellingPrice;
+                const no = startIdx + idx + 1;
+
+                const thumb = p.image
+                    ? `<img src="${p.image}" alt="${p.name}" class="w-10 h-10 object-contain rounded-lg bg-white/75 border border-white/85 mx-auto p-0.5 cursor-pointer" onmouseenter="showHoverPopup(event, ${p.id})" onmousemove="moveHoverPopup(event)" onmouseleave="hideHoverPopup()" onclick="openDetailModal(${p.id})">`
+                    : `<div class="w-10 h-10 rounded-lg bg-white/50 border border-white/70 flex items-center justify-center text-stone-400 mx-auto"><i data-lucide="image" class="w-4 h-4"></i></div>`;
+
+                const textCell = (field, val) => canInlineEdit
+                    ? `<input type="text" value="${String(val || '').replace(/"/g, '&quot;')}" onchange="handleInlineFieldUpdate(${p.id}, '${field}', this.value)" class="glass-input w-full min-w-[120px] px-2 py-1 text-xs rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">`
+                    : `<span>${val || '-'}</span>`;
+
+                const numCell = (field, val, widthClass = 'w-24') => canInlineEdit
+                    ? `<input type="number" min="0" step="any" value="${Number(val) || 0}" onchange="handleInlinePriceUpdate(${p.id}, '${field}', this.value)" class="glass-input ${widthClass} px-2 py-1 text-xs font-mono text-right rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">`
+                    : `<span class="font-mono">${formatRupiah(val)}</span>`;
+
+                const pctCell = (field, val) => canInlineEdit
+                    ? `<input type="number" min="0" max="1000" step="0.1" value="${Number(val) || 0}" onchange="handleInlinePriceUpdate(${p.id}, '${field}', this.value)" class="glass-input w-16 px-1.5 py-1 text-xs font-mono text-right rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">`
+                    : `<span class="font-mono">${Number(val) || 0}%</span>`;
+
+                return `
+                    <tr class="hover:bg-white/45 transition">
+                        <td class="py-2.5 px-3 text-center font-mono text-stone-500">${no}</td>
+                        <td class="py-2.5 px-3 text-center">${thumb}</td>
+                        <td class="py-2.5 px-3 font-mono font-semibold">${textCell('code', p.code)}</td>
+                        <td class="py-2.5 px-3">${textCell('category', p.category)}</td>
+                        <td class="py-2.5 px-3 font-semibold text-stone-900">${textCell('name', p.name)}</td>
+                        <td class="py-2.5 px-3 text-stone-600">${textCell('desc', p.desc)}</td>
+                        <td class="py-2.5 px-3 text-stone-600">${textCell('material', p.material)}</td>
+                        ${currentUserRole === 'admin' ? `
+                            <td class="py-2.5 px-3 text-right">${numCell('rangka', pr.rangka)}</td>
+                            <td class="py-2.5 px-3 text-right">${numCell('anyam', pr.anyam)}</td>
+                            <td class="py-2.5 px-3 text-right">${numCell('finishing', pr.finishing)}</td>
+                            <td class="py-2.5 px-3 text-right">${numCell('aksesoris1', pr.aksesoris1)}</td>
+                            <td class="py-2.5 px-3 text-right">${numCell('aksesoris2', pr.aksesoris2)}</td>
+                            <td class="py-2.5 px-3 text-right">${numCell('label', pr.label, 'w-20')}</td>
+                            <td class="py-2.5 px-3 text-right bg-amber-500/10">${pctCell('overheadPct', pr.overheadPct)}</td>
+                            <td class="py-2.5 px-3 text-right bg-amber-500/10 font-mono text-amber-950">${formatRupiah(pr.overhead)}</td>
+                            <td class="py-2.5 px-3 text-right bg-emerald-500/10">${pctCell('profitPct', pr.profitPct)}</td>
+                            <td class="py-2.5 px-3 text-right bg-emerald-500/10 font-mono text-emerald-950">${formatRupiah(pr.profit)}</td>
+                            <td class="py-2.5 px-3 text-right">${numCell('fob', pr.fob)}</td>
+                        ` : ''}
+                        <td class="py-2.5 px-4 text-right bg-brand-500/10 font-mono font-bold text-brand-950">${formatRupiah(selling)}</td>
+                        <td class="py-2.5 px-4 text-center sticky right-0 bg-white/85 backdrop-blur-xl shadow-[-4px_0_12px_-4px_rgba(0,0,0,0.08)]">
+                            <div class="inline-flex items-center gap-1">
+                                <button type="button" onclick="openDetailModal(${p.id})" class="p-1.5 rounded-lg bg-white/70 hover:bg-white text-stone-700 border border-white/80 cursor-pointer" title="Detail">
+                                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                </button>
+                                ${currentUserRole === 'admin' ? `
+                                    <button type="button" onclick="openFormModal(${p.id})" class="p-1.5 rounded-lg bg-white/70 hover:bg-white text-brand-700 border border-white/80 cursor-pointer" title="Edit Lengkap">
+                                        <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button type="button" onclick="confirmDeleteProduct(${p.id})" class="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-600 border border-red-200/70 cursor-pointer" title="Hapus">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function changeTablePage(delta) {
+            const perPageVal = document.getElementById('table-per-page')?.value || '25';
+            const perPage = perPageVal === 'all' ? filteredTableProducts.length : Math.max(1, parseInt(perPageVal, 10) || 25);
+            const totalPages = Math.max(1, Math.ceil(filteredTableProducts.length / perPage));
+            const next = tableCurrentPage + delta;
+            if (next >= 1 && next <= totalPages) {
+                tableCurrentPage = next;
+                renderDataTable();
+            }
+        }
+
+        function flashAutosaveStatus() {
+            const el = document.getElementById('table-autosave-status');
+            if (!el) return;
+            el.classList.remove('hidden');
+            el.classList.add('inline-flex');
+            setTimeout(() => {
+                el.classList.add('hidden');
+                el.classList.remove('inline-flex');
+            }, 1800);
+        }
+
+        async function handleInlineFieldUpdate(id, field, value) {
+            if (currentUserRole !== 'admin') return;
+            const idx = products.findIndex(p => p.id === id);
+            if (idx === -1) return;
+            products[idx][field] = String(value).trim();
+            await putProductToDB(products[idx]);
+            flashAutosaveStatus();
+            populateCategories();
+            populateMaterials();
+            populateTableCategories();
+            applyFilters();
+        }
+
+        async function handleInlinePriceUpdate(id, field, value) {
+            if (currentUserRole !== 'admin') return;
+            const idx = products.findIndex(p => p.id === id);
+            if (idx === -1) return;
+            const num = parseFloat(value);
+            const updatedPricing = {
+                ...(products[idx].pricing || {}),
+                [field]: isNaN(num) || num < 0 ? 0 : num
+            };
+            const norm = normalizePricing(updatedPricing);
+            products[idx].pricing = norm.pricing;
+            products[idx].sellingPrice = norm.sellingPrice;
+            await putProductToDB(products[idx]);
+            flashAutosaveStatus();
+            renderDataTable();
+            applyFilters();
+        }
+
+        // =====================================================================
+        // FORM MODAL (ADD / EDIT PRODUCT)
+        // =====================================================================
+        let tempUploadedImage = "";
+
+        function openFormModal(productId = null) {
+            if (currentUserRole !== 'admin') return;
+            const modal = document.getElementById('form-modal');
+            const title = document.getElementById('form-modal-title');
+            const idInput = document.getElementById('form-product-id');
+
+            tempUploadedImage = "";
+            document.getElementById('form-image-file').value = "";
+            document.getElementById('form-image-url').value = "";
+
+            if (productId) {
+                const prod = products.find(p => p.id === productId);
+                if (!prod) return;
+                const norm = normalizePricing(prod.pricing);
+                const pr = norm.pricing;
+
+                title.innerHTML = `<i data-lucide="edit-3" class="w-5 h-5 text-brand-600"></i> Edit Data & Harga Produk ERP`;
+                idInput.value = prod.id;
+                document.getElementById('form-code').value = prod.code || '';
+                document.getElementById('form-category').value = prod.category || 'Furniture';
+                document.getElementById('form-name').value = prod.name || '';
+                document.getElementById('form-material').value = prod.material || '';
+                document.getElementById('form-desc').value = prod.desc || '';
+
+                document.getElementById('price-rangka').value = pr.rangka;
+                document.getElementById('price-anyam').value = pr.anyam;
+                document.getElementById('price-finishing').value = pr.finishing;
+                document.getElementById('price-aksesoris1').value = pr.aksesoris1;
+                document.getElementById('price-aksesoris2').value = pr.aksesoris2;
+                document.getElementById('price-label').value = pr.label;
+                document.getElementById('price-overhead-pct').value = pr.overheadPct;
+                document.getElementById('price-profit-pct').value = pr.profitPct;
+                document.getElementById('price-fob').value = pr.fob;
+
+                if (prod.image) {
+                    if (prod.image.startsWith('data:')) {
+                        tempUploadedImage = prod.image;
+                    } else {
+                        document.getElementById('form-image-url').value = prod.image;
+                    }
+                    setFormImagePreview(prod.image);
+                } else {
+                    setFormImagePreview("");
+                }
+            } else {
+                title.innerHTML = `<i data-lucide="plus-circle" class="w-5 h-5 text-brand-600"></i> Tambah Produk Baru ERP`;
+                idInput.value = "";
+                document.getElementById('form-code').value = "";
+                document.getElementById('form-category').value = "Furniture";
+                document.getElementById('form-name').value = "";
+                document.getElementById('form-material').value = "";
+                document.getElementById('form-desc').value = "";
+
+                document.getElementById('price-rangka').value = 0;
+                document.getElementById('price-anyam').value = 0;
+                document.getElementById('price-finishing').value = 0;
+                document.getElementById('price-aksesoris1').value = 0;
+                document.getElementById('price-aksesoris2').value = 0;
+                document.getElementById('price-label').value = 0;
+                document.getElementById('price-overhead-pct').value = globalMargins.overheadPct;
+                document.getElementById('price-profit-pct').value = globalMargins.profitPct;
+                document.getElementById('price-fob').value = 0;
+                setFormImagePreview("");
+            }
+
+            calculateTotalPrice();
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeFormModal() {
+            const modal = document.getElementById('form-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function setFormImagePreview(src) {
+            const preview = document.getElementById('image-preview');
+            if (!preview) return;
+            if (src) {
+                preview.innerHTML = `<img src="${src}" alt="Preview" class="w-full h-full object-contain">`;
+            } else {
+                preview.innerHTML = `<i data-lucide="image" class="w-8 h-8 text-stone-400"></i>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                tempUploadedImage = ev.target.result;
+                document.getElementById('form-image-url').value = "";
+                setFormImagePreview(tempUploadedImage);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleImageUrlInput(e) {
+            const url = (e.target.value || '').trim();
+            tempUploadedImage = "";
+            setFormImagePreview(url);
+        }
+
+        async function saveProduct(e) {
+            e.preventDefault();
+            if (currentUserRole !== 'admin') return;
+
+            const existingId = document.getElementById('form-product-id').value;
+            const urlInput = (document.getElementById('form-image-url').value || '').trim();
+            const finalImage = tempUploadedImage || urlInput || (existingId ? (products.find(p => String(p.id) === String(existingId))?.image || "") : "");
+
+            const norm = normalizePricing({
+                rangka: document.getElementById('price-rangka').value,
+                anyam: document.getElementById('price-anyam').value,
+                finishing: document.getElementById('price-finishing').value,
+                aksesoris1: document.getElementById('price-aksesoris1').value,
+                aksesoris2: document.getElementById('price-aksesoris2').value,
+                label: document.getElementById('price-label').value,
+                overheadPct: document.getElementById('price-overhead-pct').value,
+                profitPct: document.getElementById('price-profit-pct').value,
+                fob: document.getElementById('price-fob').value
+            });
+
+            const itemData = {
+                id: existingId ? Number(existingId) : getNextProductId(),
+                code: document.getElementById('form-code').value.trim(),
+                category: document.getElementById('form-category').value.trim() || 'Lainnya',
+                name: document.getElementById('form-name').value.trim(),
+                material: document.getElementById('form-material').value.trim(),
+                desc: document.getElementById('form-desc').value.trim(),
+                image: finalImage,
+                pricing: norm.pricing,
+                sellingPrice: norm.sellingPrice
+            };
+
+            if (existingId) {
+                const idx = products.findIndex(p => String(p.id) === String(existingId));
+                if (idx !== -1) products[idx] = itemData;
+                else products.push(itemData);
+                showToast("Produk berhasil diperbarui!");
+            } else {
+                products.push(itemData);
+                showToast("Produk baru berhasil ditambahkan!");
+            }
+
+            await putProductToDB(itemData);
+            closeFormModal();
+            syncAllViews();
+        }
+
+        // =====================================================================
+        // DETAIL MODAL & DELETE
+        // =====================================================================
+        function openDetailModal(id) {
+            const prod = products.find(p => p.id === id);
+            if (!prod) return;
+
+            const norm = normalizePricing(prod.pricing);
+            const pr = norm.pricing;
+
+            document.getElementById('modal-category').textContent = prod.category || 'Lainnya';
+            document.getElementById('modal-title').textContent = prod.name || '-';
+            document.getElementById('modal-code').textContent = `Kode ERP: ${prod.code || '-'}`;
+            document.getElementById('modal-desc').textContent = prod.desc || '-';
+            document.getElementById('modal-material').textContent = prod.material || '-';
+            document.getElementById('modal-selling-price').textContent = formatRupiah(norm.sellingPrice);
+            document.getElementById('modal-selling-subtitle').textContent = `Subtotal + Overhead (${pr.overheadPct}%) + Profit (${pr.profitPct}%) + FOB`;
+
+            const imgContainer = document.getElementById('modal-img-container');
+            imgContainer.innerHTML = prod.image
+                ? `<img src="${prod.image}" alt="${prod.name}" class="max-h-full max-w-full object-contain rounded-xl">`
+                : `<div class="flex flex-col items-center text-stone-400"><i data-lucide="image" class="w-10 h-10 mb-1"></i><span class="text-xs">Belum ada foto produk</span></div>`;
+
+            document.getElementById('detail-rangka').textContent = formatRupiah(pr.rangka);
+            document.getElementById('detail-anyam').textContent = formatRupiah(pr.anyam);
+            document.getElementById('detail-finishing').textContent = formatRupiah(pr.finishing);
+            document.getElementById('detail-aksesoris1').textContent = formatRupiah(pr.aksesoris1);
+            document.getElementById('detail-aksesoris2').textContent = formatRupiah(pr.aksesoris2);
+            document.getElementById('detail-label').textContent = formatRupiah(pr.label);
+            document.getElementById('detail-overhead-label').textContent = `Overhead (${pr.overheadPct}%):`;
+            document.getElementById('detail-overhead').textContent = formatRupiah(pr.overhead);
+            document.getElementById('detail-profit-label').textContent = `Profit (${pr.profitPct}%):`;
+            document.getElementById('detail-profit').textContent = formatRupiah(pr.profit);
+            document.getElementById('detail-fob').textContent = formatRupiah(pr.fob);
+
+            document.getElementById('modal-edit-btn').onclick = () => {
+                closeModal();
+                openFormModal(prod.id);
+            };
+            document.getElementById('modal-delete-btn').onclick = () => {
+                closeModal();
+                confirmDeleteProduct(prod.id);
+            };
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmDeleteProduct(id) {
+            if (currentUserRole !== 'admin') return;
+            const prod = products.find(p => p.id === id);
+            showConfirmDialog(
+                "Hapus Produk",
+                `Hapus produk "${prod?.name || id}" (${prod?.code || ''}) secara permanen?`,
+                async () => {
+                    products = products.filter(p => p.id !== id);
+                    wishlist = wishlist.filter(wId => wId !== id);
+                    localStorage.setItem('ERP_Wishlist', JSON.stringify(wishlist));
+                    await deleteProductFromDB(id);
+                    syncAllViews();
+                    showToast("Produk berhasil dihapus.");
+                }
+            );
+        }
+
+        function clearAllData() {
+            if (currentUserRole !== 'admin') return;
+            showConfirmDialog(
+                "Hapus Semua Data",
+                "Apakah Anda yakin ingin menghapus seluruh data produk di penyimpanan lokal?",
+                async () => {
+                    products = [];
+                    wishlist = [];
+                    localStorage.setItem('ERP_Wishlist', JSON.stringify(wishlist));
+                    await saveAllProductsToDB([]);
+                    syncAllViews();
+                    showToast("Seluruh data produk telah dihapus.");
+                }
+            );
+        }
+
+        // =====================================================================
+        // WISHLIST
+        // =====================================================================
+        function toggleWishlist(id) {
+            if (wishlist.includes(id)) {
+                wishlist = wishlist.filter(wId => wId !== id);
+            } else {
+                wishlist.push(id);
+            }
+            localStorage.setItem('ERP_Wishlist', JSON.stringify(wishlist));
+            updateWishlistBadge();
+            renderProducts();
+            if (!document.getElementById('wishlist-modal').classList.contains('hidden')) {
+                renderWishlistModal();
+            }
+        }
+
+        function updateWishlistBadge() {
+            const badge = document.getElementById('wishlist-badge');
+            if (!badge) return;
+            if (wishlist.length > 0) {
+                badge.textContent = wishlist.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleWishlistModal() {
+            const modal = document.getElementById('wishlist-modal');
+            if (!modal) return;
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                renderWishlistModal();
+            }
+        }
+
+        function renderWishlistModal() {
+            const container = document.getElementById('wishlist-items');
+            const totalEl = document.getElementById('wishlist-total');
+            const items = products.filter(p => wishlist.includes(p.id));
+            totalEl.textContent = `${items.length} Item disimpan`;
+
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-xs text-stone-500 text-center py-6">Belum ada produk favorit dipilih.</p>`;
+                return;
+            }
+
+            container.innerHTML = items.map(p => {
+                const selling = p.sellingPrice || normalizePricing(p.pricing).sellingPrice;
+                return `
+                    <div class="glass-sub p-2.5 rounded-xl flex items-center justify-between gap-2 text-xs">
+                        <div class="min-w-0">
+                            <p class="font-bold text-stone-900 truncate">${p.code ? p.code + ' - ' : ''}${p.name}</p>
+                            <p class="font-mono text-emerald-800 font-semibold">${formatRupiah(selling)}</p>
+                        </div>
+                        <button type="button" onclick="toggleWishlist(${p.id})" class="p-1.5 text-red-600 hover:bg-red-500/15 rounded-lg cursor-pointer" title="Hapus dari Favorit">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // =====================================================================
+        // EXCEL & JSON IMPORT / EXPORT
+        // =====================================================================
+        function parseExcelRows(file, callback) {
+            if (typeof XLSX === 'undefined') {
+                showToast("Library SheetJS (XLSX) belum termuat.", "error");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.SheetNames[0];
+                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: "" });
+                    callback(rows);
+                } catch (err) {
+                    console.error(err);
+                    showToast("Gagal membaca file Excel.", "error");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function pickVal(row, keys) {
+            for (const k of keys) {
+                if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== "") {
+                    return row[k];
+                }
+                const lowerKey = Object.keys(row).find(rk => rk.toLowerCase().trim() === k.toLowerCase());
+                if (lowerKey && row[lowerKey] !== undefined && row[lowerKey] !== null && String(row[lowerKey]).trim() !== "") {
+                    return row[lowerKey];
+                }
+            }
+            return "";
+        }
+
+        function parseNumVal(val, fallback = 0) {
+            if (typeof val === 'number') return isNaN(val) ? fallback : val;
+            const cleaned = String(val || '').replace(/[^0-9.,-]/g, '').replace(',', '.');
+            const n = parseFloat(cleaned);
+            return isNaN(n) ? fallback : n;
+        }
+
+        async function importExcelFile(event) {
+            if (currentUserRole !== 'admin') return;
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            parseExcelRows(file, async (rows) => {
+                if (!rows.length) {
+                    showToast("File Excel kosong.", "error");
+                    return;
+                }
+                let nextId = getNextProductId();
+                const imported = rows.map(row => {
+                    const code = String(pickVal(row, ['Kode ERP', 'Kode', 'Code', 'Kode Barang']) || '').trim();
+                    const name = String(pickVal(row, ['Nama Produk', 'Nama', 'Name', 'Product Name']) || '').trim();
+                    if (!code && !name) return null;
+
+                    const category = String(pickVal(row, ['Kategori', 'Category']) || 'Lainnya').trim();
+                    const desc = String(pickVal(row, ['Deskripsi', 'Ukuran', 'Desc', 'Description']) || '').trim();
+                    const material = String(pickVal(row, ['Bahan Baku', 'Bahan', 'Material']) || '').trim();
+                    const image = String(pickVal(row, ['Foto', 'Gambar', 'Image', 'URL Foto']) || '').trim();
+
+                    const norm = normalizePricing({
+                        rangka: parseNumVal(pickVal(row, ['Rangka', 'Harga Rangka'])),
+                        anyam: parseNumVal(pickVal(row, ['Anyam', 'Harga Anyam'])),
+                        finishing: parseNumVal(pickVal(row, ['Finishing', 'Harga Finishing'])),
+                        aksesoris1: parseNumVal(pickVal(row, ['Aksesoris 1', 'Harga Aksesoris 1', 'Acc 1'])),
+                        aksesoris2: parseNumVal(pickVal(row, ['Aksesoris 2', 'Harga Aksesoris 2', 'Acc 2'])),
+                        label: parseNumVal(pickVal(row, ['Label', 'Harga Label'])),
+                        overheadPct: parseNumVal(pickVal(row, ['OH (%)', 'Overhead (%)', 'Overhead Pct']), globalMargins.overheadPct),
+                        profitPct: parseNumVal(pickVal(row, ['Profit (%)', 'Profit Pct']), globalMargins.profitPct),
+                        fob: parseNumVal(pickVal(row, ['FOB Jakarta', 'FOB']))
+                    });
+
+                    return {
+                        id: nextId++,
+                        code,
+                        category,
+                        name,
+                        desc,
+                        material,
+                        image,
+                        pricing: norm.pricing,
+                        sellingPrice: norm.sellingPrice
+                    };
+                }).filter(Boolean);
+
+                products = [...products, ...imported];
+                await saveAllProductsToDB(products);
+                syncAllViews();
+                showToast(`Berhasil mengimpor ${imported.length} produk dari Excel!`);
+            });
+
+            event.target.value = "";
+        }
+
+        async function importPriceOnlyExcel(event) {
+            if (currentUserRole !== 'admin') return;
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            parseExcelRows(file, async (rows) => {
+                if (!rows.length) {
+                    showToast("File Excel kosong.", "error");
+                    return;
+                }
+                let updatedCount = 0;
+                const unmatchedCodes = [];
+
+                for (const row of rows) {
+                    const code = String(pickVal(row, ['Kode ERP', 'Kode', 'Code', 'Kode Barang']) || '').trim().toLowerCase();
+                    if (!code) continue;
+
+                    const targetIdx = products.findIndex(p => String(p.code || '').trim().toLowerCase() === code);
+                    if (targetIdx === -1) {
+                        unmatchedCodes.push(String(pickVal(row, ['Kode ERP', 'Kode', 'Code', 'Kode Barang'])));
+                        continue;
+                    }
+
+                    const existingPr = products[targetIdx].pricing || {};
+                    const norm = normalizePricing({
+                        rangka: row['Rangka'] !== undefined ? parseNumVal(row['Rangka']) : existingPr.rangka,
+                        anyam: row['Anyam'] !== undefined ? parseNumVal(row['Anyam']) : existingPr.anyam,
+                        finishing: row['Finishing'] !== undefined ? parseNumVal(row['Finishing']) : existingPr.finishing,
+                        aksesoris1: row['Aksesoris 1'] !== undefined ? parseNumVal(row['Aksesoris 1']) : existingPr.aksesoris1,
+                        aksesoris2: row['Aksesoris 2'] !== undefined ? parseNumVal(row['Aksesoris 2']) : existingPr.aksesoris2,
+                        label: row['Label'] !== undefined ? parseNumVal(row['Label']) : existingPr.label,
+                        overheadPct: row['OH (%)'] !== undefined ? parseNumVal(row['OH (%)'], existingPr.overheadPct) : existingPr.overheadPct,
+                        profitPct: row['Profit (%)'] !== undefined ? parseNumVal(row['Profit (%)'], existingPr.profitPct) : existingPr.profitPct,
+                        fob: row['FOB Jakarta'] !== undefined ? parseNumVal(row['FOB Jakarta']) : existingPr.fob
+                    });
+
+                    products[targetIdx].pricing = norm.pricing;
+                    products[targetIdx].sellingPrice = norm.sellingPrice;
+                    updatedCount++;
+                }
+
+                await saveAllProductsToDB(products);
+                syncAllViews();
+
+                const bodyEl = document.getElementById('price-import-result-body');
+                bodyEl.innerHTML = `
+                    <div class="p-3 rounded-xl bg-emerald-500/15 border border-emerald-300/60 text-emerald-950 font-semibold">
+                        Berhasil memperbarui harga ${updatedCount} produk (foto & spesifikasi tetap aman).
+                    </div>
+                    ${unmatchedCodes.length > 0 ? `
+                        <div class="p-3 rounded-xl bg-amber-500/15 border border-amber-300/60 text-amber-950">
+                            <p class="font-semibold mb-1">Kode tidak ditemukan (${unmatchedCodes.length}):</p>
+                            <p class="font-mono text-[11px] break-words">${unmatchedCodes.join(', ')}</p>
+                        </div>
+                    ` : ''}
+                `;
+                document.getElementById('price-import-result-modal').classList.remove('hidden');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            });
+
+            event.target.value = "";
+        }
+
+        function exportToExcel() {
+            if (currentUserRole !== 'admin') return;
+            if (typeof XLSX === 'undefined') {
+                showToast("Library SheetJS (XLSX) belum termuat.", "error");
+                return;
+            }
+            const rows = products.map((p, i) => {
+                const norm = normalizePricing(p.pricing);
+                const pr = norm.pricing;
+                return {
+                    No: i + 1,
+                    'Kode ERP': p.code || '',
+                    Kategori: p.category || '',
+                    'Nama Produk': p.name || '',
+                    Deskripsi: p.desc || '',
+                    'Bahan Baku': p.material || '',
+                    Rangka: pr.rangka,
+                    Anyam: pr.anyam,
+                    Finishing: pr.finishing,
+                    'Aksesoris 1': pr.aksesoris1,
+                    'Aksesoris 2': pr.aksesoris2,
+                    Label: pr.label,
+                    'OH (%)': pr.overheadPct,
+                    'Overhead (Rp)': pr.overhead,
+                    'Profit (%)': pr.profitPct,
+                    'Profit (Rp)': pr.profit,
+                    'FOB Jakarta': pr.fob,
+                    'Harga Jual': norm.sellingPrice
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Katalog ERP");
+            XLSX.writeFile(wb, `Katalog_ERP_${new Date().toISOString().slice(0, 10)}.xlsx`);
+            showToast("File Excel berhasil diekspor!");
+        }
+
+        function exportToJson() {
+            if (currentUserRole !== 'admin') return;
+            const blob = new Blob([JSON.stringify(products, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ERP_Catalog_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Backup JSON berhasil diunduh.");
+        }
+
+        function importFromJson(event) {
+            if (currentUserRole !== 'admin') return;
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!Array.isArray(parsed)) throw new Error("Format JSON tidak valid");
+                    products = parsed.map((item, idx) => {
+                        const norm = normalizePricing(item.pricing);
+                        return {
+                            ...item,
+                            id: Number(item.id) || (idx + 1),
+                            pricing: norm.pricing,
+                            sellingPrice: norm.sellingPrice
+                        };
+                    });
+                    await saveAllProductsToDB(products);
+                    syncAllViews();
+                    showToast(`Berhasil memulihkan ${products.length} data dari JSON!`);
+                } catch (err) {
+                    showToast("Gagal mengimpor file JSON.", "error");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = "";
+        }
+
+        // =====================================================================
+        // INITIALIZATION
+        // =====================================================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            loadGlobalMargins();
+            try {
+                await initDB();
+                const stored = await loadProductsFromDB();
+                if (stored && stored.length > 0) {
+                    products = stored;
+                } else {
+                    products = initialExcelData;
+                    await saveAllProductsToDB(products);
+                }
+            } catch (err) {
+                console.warn("IndexedDB fallback ke data awal:", err);
+                products = initialExcelData;
+            }
+            syncAllViews();
+            restoreRememberedSession();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
